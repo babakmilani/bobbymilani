@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creator Community Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 3em;
+            font-weight: bold;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            /* Add this line */
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .tagline {
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .benefits {
+            list-style: none;
+            margin: 20px 0;
+        }
+
+        .benefits li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .benefits li:before {
+            content: "✨";
+            position: absolute;
+            left: 0;
+        }
+
+        .signup-form {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .checkbox-group {
+            text-align: left;
+            margin: 20px 0;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+        }
+
+        .submit-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background: white;
+            color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .legal-text {
+            font-size: 0.8em;
+            opacity: 0.8;
+            margin-top: 20px;
+            line-height: 1.4;
+        }
+
+        .success-message {
+            display: none;
+            background: #4CAF50;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .hero-stats {
+                gap: 20px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">Creator Hub</div>
+            <div class="tagline">Join Our Exclusive Creator Community</div>
+            <div class="hero-stats">
+                <div class="stat">
+                    <div class="stat-number">20K+</div>
+                    <div class="stat-label">YouTube Family</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">5K</div>
+                    <div class="stat-label">Target Community</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">Monthly Prizes</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="content-grid">
+            <div class="card">
+                <h2>🎯 Exclusive Community Access</h2>
+                <p>Join a select group of our most engaged viewers for behind-the-scenes content, early video previews,
+                    and direct interaction with our creator.</p>
+                <ul class="benefits">
+                    <li>Early access to new videos</li>
+                    <li>Behind-the-scenes content</li>
+                    <li>Monthly live Q&A sessions</li>
+                    <li>Community Discord server</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h2>🎁 Monthly Prize Drawings</h2>
+                <p>Every month, we host exclusive raffles with amazing prizes. From tech gadgets to unique experiences -
+                    there's always something exciting to win!</p>
+                <ul class="benefits">
+                    <li>High-value monthly prizes</li>
+                    <li>Exclusive raffle entries</li>
+                    <li>Winner spotlights</li>
+                    <li>Special bonus drawings</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h2>💬 Direct Creator Connection</h2>
+                <p>Get closer to the creative process with exclusive updates, polls on upcoming content, and the ability
+                    to influence what we create next.</p>
+                <ul class="benefits">
+                    <li>Content polls and voting</li>
+                    <li>Creator newsletters</li>
+                    <li>Feedback opportunities</li>
+                    <li>Community challenges</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card signup-form">
+            <h2>🚀 Join Our Community</h2>
+            <p>Ready to become part of something special? Join our exclusive community today!</p>
+
+            <form id="communityForm" onsubmit="handleSubmit(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name *</label>
+                        <input type="text" id="firstName" name="firstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name *</label>
+                        <input type="text" id="lastName" name="lastName" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number (Optional)</label>
+                    <input type="tel" id="phone" name="phone" placeholder="For SMS notifications">
+                </div>
+
+                <div class="form-group">
+                    <label for="youtube">Your YouTube Handle/Name *</label>
+                    <input type="text" id="youtube" name="youtube" required placeholder="@username or display name">
+                </div>
+
+                <div class="form-group">
+                    <label for="contact">Preferred Contact Method</label>
+                    <select id="contact" name="contact">
+                        <option value="email">Email Only</option>
+                        <option value="sms">SMS Only</option>
+                        <option value="both">Both Email & SMS</option>
+                    </select>
+                </div>
+
+                <div class="checkbox-group">
+                    <label>
+                        <input type="checkbox" name="terms" required>
+                        I agree to the Terms & Conditions and Privacy Policy *
+                    </label>
+                </div>
+
+                <div class="checkbox-group">
+                    <label>
+                        <input type="checkbox" name="marketing">
+                        I want to receive marketing communications and special offers
+                    </label>
+                </div>
+
+                <button type="submit" class="submit-btn">Join the Community</button>
+            </form>
+
+            <div class="success-message" id="successMessage">
+                <h3>🎉 Welcome to the Community!</h3>
+                <p>Thank you for joining! You'll receive a welcome email within 24 hours with all the details about your
+                    membership and upcoming raffles.</p>
+            </div>
+
+            <div class="legal-text">
+                By joining, you agree to receive periodic emails about community updates, exclusive content, and monthly
+                raffle announcements. You can unsubscribe at any time. This community operates independently from
+                YouTube. Winners will be selected randomly and contacted via provided contact information. Prizes may
+                vary by month and location restrictions may apply.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function handleSubmit(event) {
+            event.preventDefault();
+
+            // Get form data
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData);
+
+            // Basic validation
+            if (!data.firstName || !data.lastName || !data.email || !data.youtube) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+
+            if (!data.terms) {
+                alert('Please agree to the Terms & Conditions to continue.');
+                return;
+            }
+
+            // Here you would typically send the data to your server
+            // For demo purposes, we'll just show the success message
+            console.log('Form Data:', data);
+
+            // Hide form and show success message
+            document.getElementById('communityForm').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
+
+            // In a real implementation, you would:
+            // 1. Send data to your server/Google Sheets/CRM
+            // 2. Add to email marketing platform
+            // 3. Verify YouTube subscription status
+            // 4. Send welcome email
+        }
+
+        // Add some interactive elements
+        document.addEventListener('DOMContentLoaded', function () {
+            // Animate stats on page load
+            const stats = document.querySelectorAll('.stat-number');
+            stats.forEach(stat => {
+                const finalValue = stat.textContent;
+                const numericValue = parseInt(finalValue.replace(/\D/g, ''));
+                let currentValue = 0;
+                const increment = numericValue / 50;
+
+                const timer = setInterval(() => {
+                    currentValue += increment;
+                    if (currentValue >= numericValue) {
+                        stat.textContent = finalValue;
+                        clearInterval(timer);
+                    } else {
+                        const suffix = finalValue.includes('K') ? 'K+' : '';
+                        stat.textContent = Math.floor(currentValue / 1000) + suffix;
+                    }
+                }, 30);
+            });
+        });
+    </script>
+</body>
+
+</html>
