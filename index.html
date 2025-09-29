@@ -19,7 +19,8 @@
         body {
             font-family: 'Arial', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            /* We need more content for scrolling, so min-height is critical for testing! */
+            min-height: 200vh; 
             color: #333;
         }
 
@@ -45,7 +46,6 @@
             background: linear-gradient(45deg, #667eea, #764ba2);
             -webkit-background-clip: text;
             background-clip: text;
-            /* Add this line */
             -webkit-text-fill-color: transparent;
             margin-bottom: 10px;
         }
@@ -202,6 +202,35 @@
             margin-top: 20px;
         }
 
+        /* ------------------------------------------- */
+        /* --- NEW POPUP STYLES --- */
+        /* ------------------------------------------- */
+        #competition-popup {
+            position: fixed;
+            top: 20%; /* Position it 20% from the top */
+            right: 0;
+            /* Start it off-screen to the right by its own width */
+            transform: translateX(100%); 
+            width: 300px; 
+            padding: 15px;
+            background: #f8c050; /* A distinct, attention-grabbing color */
+            color: #333;
+            border-radius: 10px 0 0 10px; /* Rounded only on the left side */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            z-index: 1000; /* Ensure it's on top of everything */
+            transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smooth animation */
+            font-weight: bold;
+            text-align: center;
+            border: 2px solid #e0a800;
+        }
+
+        /* Class to slide the popup ON screen */
+        #competition-popup.show {
+            transform: translateX(0);
+        }
+        /* ------------------------------------------- */
+
+
         @media (max-width: 768px) {
             .hero-stats {
                 gap: 20px;
@@ -214,11 +243,27 @@
             .container {
                 padding: 10px;
             }
+            /* Adjust popup for smaller screens */
+            #competition-popup {
+                width: 90%;
+                left: 5%;
+                right: 5%;
+                top: auto;
+                bottom: 20px;
+                transform: translateX(150%);
+                border-radius: 10px;
+            }
+            #competition-popup.show {
+                transform: translateX(0);
+            }
         }
     </style>
 </head>
 
 <body>
+    <div id="competition-popup">
+        🔥 **First Competition:** Blue iMac M3...
+    </div>
     <div class="container">
         <header>
             <div class="logo">Creator Hub</div>
@@ -412,7 +457,6 @@
             }
         }
 
-        // Add event listener to the form to call handleSubmit on submission
         document.addEventListener('DOMContentLoaded', function () {
             const form = document.getElementById('communityForm');
             if (form) {
@@ -438,6 +482,41 @@
                     }
                 }, 30);
             });
+            // -----------------------------------------------------------
+            
+            // -----------------------------------------------------------
+            // --- NEW POPUP LOGIC ---
+            // -----------------------------------------------------------
+            const popup = document.getElementById('competition-popup');
+            let hasShownPopup = false;
+            const scrollThreshold = 300; // How far the user must scroll (in pixels) before the popup appears
+            const displayDuration = 5000; // 5 seconds in milliseconds
+
+            function handleScroll() {
+                // Check if the user has scrolled past the threshold AND the popup hasn't shown yet
+                if (window.scrollY > scrollThreshold && !hasShownPopup) {
+                    hasShownPopup = true; // Mark as shown so it doesn't appear again on every scroll
+                    window.removeEventListener('scroll', handleScroll); // Stop checking the scroll position
+
+                    // 1. Show the popup (slides in from the right)
+                    popup.classList.add('show');
+
+                    // 2. Set a timer to hide the popup after 5 seconds
+                    setTimeout(() => {
+                        // Hide the popup (slides back to the right)
+                        popup.classList.remove('show');
+                        
+                        // Optional: After the transition is complete (0.6s), you could hide it completely
+                        // setTimeout(() => {
+                        //     popup.style.display = 'none';
+                        // }, 600); 
+
+                    }, displayDuration);
+                }
+            }
+
+            // Listen for the scroll event
+            window.addEventListener('scroll', handleScroll);
             // -----------------------------------------------------------
         });
     </script>
