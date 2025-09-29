@@ -281,7 +281,7 @@
             <h2>🚀 Join Our Community</h2>
             <p>Ready to become part of something special? Join our exclusive community today!</p>
 
-            <form action="https://script.google.com/macros/library/d/1Z1Y0Id0T24W3_P8JqRBQwctniwhzrmUZZIj40nTx-N6JNP5onaG3Q8_D/1" id="communityForm" onsubmit="handleSubmit(event)">
+            <form id="communityForm">
                 <div class="form-row">
                     <div class="form-group">
                         <label for="firstName">First Name *</label>
@@ -350,14 +350,21 @@
     </div>
 
     <script>
-        function handleSubmit(event) {
-            event.preventDefault();
+        // *** IMPORTANT: REPLACE THIS PLACEHOLDER WITH YOUR DEPLOYED GOOGLE APPS SCRIPT WEB APP URL ***
+        const GOOGLE_APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxoFWO3moC_Zxg0snYEL6iNfWI_S-nm-Q2T9uhbFumKW4goVzouigdzt32nhLb9IgA7Hw/exec'; 
+        // Example: https://script.google.com/macros/s/AKfyc.../exec
 
-            // Get form data
-            const formData = new FormData(event.target);
-            const data = Object.fromEntries(formData);
+        async function handleSubmit(event) {
+            event.preventDefault(); // Stop the default form submission
 
-            // Basic validation
+            const form = event.target;
+            const submitButton = form.querySelector('.submit-btn');
+
+            // Get form data as a standard object
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            // --- Basic Validation ---
             if (!data.firstName || !data.lastName || !data.email || !data.youtube) {
                 alert('Please fill in all required fields.');
                 return;
@@ -367,25 +374,52 @@
                 alert('Please agree to the Terms & Conditions to continue.');
                 return;
             }
+            // ------------------------
 
-            // Here you would typically send the data to your server
-            // For demo purposes, we'll just show the success message
-            console.log('Form Data:', data);
+            // Optional: Disable button and show loading state
+            submitButton.disabled = true;
+            submitButton.textContent = 'Submitting...';
 
-            // Hide form and show success message
-            document.getElementById('communityForm').style.display = 'none';
-            document.getElementById('successMessage').style.display = 'block';
+            try {
+                // Send data to Google Apps Script Web App
+                const response = await fetch(GOOGLE_APP_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', // Essential for Google Apps Script to prevent CORS issues
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    // Convert the data object into a URL-encoded string for the Apps Script to read easily
+                    body: new URLSearchParams(data).toString(),
+                });
 
-            // In a real implementation, you would:
-            // 1. Send data to your server/Google Sheets/CRM
-            // 2. Add to email marketing platform
-            // 3. Verify YouTube subscription status
-            // 4. Send welcome email
+                // Since we use 'no-cors', we can't check the response directly, 
+                // but if the fetch completes without an error, we assume success.
+
+                console.log('Form submission assumed successful.');
+                
+                // --- On Success ---
+                document.getElementById('communityForm').style.display = 'none';
+                document.getElementById('successMessage').style.display = 'block';
+
+            } catch (error) {
+                console.error('Submission Error:', error);
+                alert('An error occurred during submission. Please try again.');
+                
+                // Re-enable button on failure
+                submitButton.disabled = false;
+                submitButton.textContent = 'Join the Community';
+            }
         }
 
-        // Add some interactive elements
+        // Add event listener to the form to call handleSubmit on submission
         document.addEventListener('DOMContentLoaded', function () {
-            // Animate stats on page load
+            const form = document.getElementById('communityForm');
+            if (form) {
+                form.addEventListener('submit', handleSubmit);
+            }
+            
+            // --- Original Stat Animation Code (Kept for completeness) ---
             const stats = document.querySelectorAll('.stat-number');
             stats.forEach(stat => {
                 const finalValue = stat.textContent;
@@ -404,6 +438,7 @@
                     }
                 }, 30);
             });
+            // -----------------------------------------------------------
         });
     </script>
 </body>
