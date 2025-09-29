@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-    <!-- Google Tag Manager -->
     <script>(function (w, d, s, l, i) {
             w[l] = w[l] || []; w[l].push({
                 'gtm.start':
@@ -11,7 +10,6 @@
                 j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
                     'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
         })(window, document, 'script', 'dataLayer', 'GTM-TH7CR3CC');</script>
-    <!-- End Google Tag Manager -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
@@ -213,34 +211,48 @@
         }
 
         /* ------------------------------------------- */
-        /* --- NEW POPUP STYLES --- */
+        /* --- POPUP STYLES --- */
         /* ------------------------------------------- */
-        #competition-popup {
+        .page-popup {
             position: fixed;
             top: 20%;
-            /* Position it 20% from the top */
-            right: 0;
-            /* Start it off-screen to the right by its own width */
-            transform: translateX(100%);
             width: 300px;
             padding: 15px;
-            background: #f8c050;
-            /* A distinct, attention-grabbing color */
-            color: #333;
-            border-radius: 10px 0 0 10px;
-            /* Rounded only on the left side */
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
             z-index: 1000;
-            /* Ensure it's on top of everything */
             transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
-            /* Smooth animation */
             font-weight: bold;
             text-align: center;
+        }
+
+        /* Right-Side Competition Popup */
+        #competition-popup {
+            right: 0;
+            transform: translateX(100%);
+            background: #f8c050;
+            color: #333;
+            border-radius: 10px 0 0 10px;
             border: 2px solid #e0a800;
         }
 
-        /* Class to slide the popup ON screen */
         #competition-popup.show {
+            transform: translateX(0);
+        }
+
+        /* Left-Side Membership Popup */
+        #membership-popup {
+            left: 0;
+            transform: translateX(-100%);
+            /* Start off-screen to the left */
+            background: #d9534f;
+            /* A warning/restrictive color (red) */
+            color: white;
+            border-radius: 0 10px 10px 0;
+            /* Rounded only on the right side */
+            border: 2px solid #c9302c;
+        }
+
+        #membership-popup.show {
             transform: translateX(0);
         }
 
@@ -260,19 +272,32 @@
                 padding: 10px;
             }
 
-            /* Adjust popup for smaller screens */
-            #competition-popup {
+            /* Adjust popups for smaller screens (they will both move to the bottom-center) */
+            .page-popup {
                 width: 90%;
-                left: 5%;
-                right: 5%;
-                top: auto;
+                left: 5% !important;
+                right: 5% !important;
+                top: auto !important;
                 bottom: 20px;
-                transform: translateX(150%);
                 border-radius: 10px;
+                /* Reset transforms so 'show' can bring it into view */
+                transform: translateX(0) !important;
             }
 
-            #competition-popup.show {
-                transform: translateX(0);
+            #competition-popup {
+                /* Hide competition popup a bit lower on mobile if both are visible */
+                transform: translateY(150%) !important;
+            }
+
+            #membership-popup {
+                /* Hide membership popup a bit higher on mobile if both are visible */
+                transform: translateY(150%) !important;
+            }
+
+            #competition-popup.show,
+            #membership-popup.show {
+                /* On mobile, slide UP instead of side-to-side */
+                transform: translateY(0) !important;
             }
         }
     </style>
@@ -280,14 +305,16 @@
 
 <body>
 
-    <!-- Google Tag Manager (noscript) -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TH7CR3CC" height="0" width="0"
             style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
+    <div id="membership-popup" class="page-popup">
+        ⚠️ **IMPORTANT:** Only channel members can join the community.
+    </div>
 
-    <div id="competition-popup">
+    <div id="competition-popup" class="page-popup">
         🔥 **First Competition:** Blue iMac M3...
     </div>
+
     <div class="container">
         <header>
             <div class="logo">Creator Hub</div>
@@ -421,7 +448,7 @@
     <script>
         // *** IMPORTANT: REPLACE THIS PLACEHOLDER WITH YOUR DEPLOYED GOOGLE APPS SCRIPT WEB APP URL ***
         const GOOGLE_APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxoFWO3moC_Zxg0snYEL6iNfWI_S-nm-Q2T9uhbFumKW4goVzouigdzt32nhLb9IgA7Hw/exec';
-        // Example: https://script.google.com/macros/s/AKfyc.../exec
+        // Example: https://script.google.com/macros/s/AKfyc.../exec'; 
 
         async function handleSubmit(event) {
             event.preventDefault(); // Stop the default form submission
@@ -509,33 +536,52 @@
             // -----------------------------------------------------------
 
             // -----------------------------------------------------------
-            // --- NEW POPUP LOGIC ---
+            // --- UPDATED POPUP LOGIC TO HANDLE BOTH ---
             // -----------------------------------------------------------
-            const popup = document.getElementById('competition-popup');
-            let hasShownPopup = false;
-            const scrollThreshold = 300; // How far the user must scroll (in pixels) before the popup appears
+
+            const competitionPopup = document.getElementById('competition-popup');
+            const membershipPopup = document.getElementById('membership-popup');
+
+            // Flags to ensure each popup only shows once per page load
+            let hasShownCompetition = false;
+            let hasShownMembership = false;
+
+            const scrollThreshold = 300; // The scroll amount to trigger the popups
             const displayDuration = 5000; // 5 seconds in milliseconds
 
+            function showAndHidePopup(popupElement, flagName) {
+                // 1. Show the popup (slides in)
+                popupElement.classList.add('show');
+
+                // 2. Set a timer to hide the popup after 5 seconds
+                setTimeout(() => {
+                    // Hide the popup (slides back out)
+                    popupElement.classList.remove('show');
+                }, displayDuration);
+            }
+
+            // To ensure the two popups don't appear at exactly the same time, 
+            // we'll offset the second one slightly.
+            const offsetDelay = 1000; // 1 second offset
+
             function handleScroll() {
-                // Check if the user has scrolled past the threshold AND the popup hasn't shown yet
-                if (window.scrollY > scrollThreshold && !hasShownPopup) {
-                    hasShownPopup = true; // Mark as shown so it doesn't appear again on every scroll
-                    window.removeEventListener('scroll', handleScroll); // Stop checking the scroll position
+                if (window.scrollY > scrollThreshold) {
 
-                    // 1. Show the popup (slides in from the right)
-                    popup.classList.add('show');
+                    // Show Competition Popup (Right)
+                    if (!hasShownCompetition) {
+                        hasShownCompetition = true;
+                        showAndHidePopup(competitionPopup);
+                    }
 
-                    // 2. Set a timer to hide the popup after 5 seconds
-                    setTimeout(() => {
-                        // Hide the popup (slides back to the right)
-                        popup.classList.remove('show');
-
-                        // Optional: After the transition is complete (0.6s), you could hide it completely
-                        // setTimeout(() => {
-                        //     popup.style.display = 'none';
-                        // }, 600); 
-
-                    }, displayDuration);
+                    // Show Membership Popup (Left), delayed by 1 second
+                    if (!hasShownMembership) {
+                        hasShownMembership = true;
+                        setTimeout(() => {
+                            showAndHidePopup(membershipPopup);
+                            // After both have run, remove the scroll listener
+                            window.removeEventListener('scroll', handleScroll);
+                        }, offsetDelay);
+                    }
                 }
             }
 
