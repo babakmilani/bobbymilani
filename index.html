@@ -2,6 +2,16 @@
 <html lang="en">
 
 <head>
+    <!-- Google Tag Manager -->
+    <script>(function (w, d, s, l, i) {
+            w[l] = w[l] || []; w[l].push({
+                'gtm.start':
+                    new Date().getTime(), event: 'gtm.js'
+            }); var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-TH7CR3CC');</script>
+    <!-- End Google Tag Manager -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
@@ -20,7 +30,7 @@
             font-family: 'Arial', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             /* We need more content for scrolling, so min-height is critical for testing! */
-            min-height: 200vh; 
+            min-height: 200vh;
             color: #333;
         }
 
@@ -207,18 +217,23 @@
         /* ------------------------------------------- */
         #competition-popup {
             position: fixed;
-            top: 20%; /* Position it 20% from the top */
+            top: 20%;
+            /* Position it 20% from the top */
             right: 0;
             /* Start it off-screen to the right by its own width */
-            transform: translateX(100%); 
-            width: 300px; 
+            transform: translateX(100%);
+            width: 300px;
             padding: 15px;
-            background: #f8c050; /* A distinct, attention-grabbing color */
+            background: #f8c050;
+            /* A distinct, attention-grabbing color */
             color: #333;
-            border-radius: 10px 0 0 10px; /* Rounded only on the left side */
+            border-radius: 10px 0 0 10px;
+            /* Rounded only on the left side */
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-            z-index: 1000; /* Ensure it's on top of everything */
-            transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smooth animation */
+            z-index: 1000;
+            /* Ensure it's on top of everything */
+            transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+            /* Smooth animation */
             font-weight: bold;
             text-align: center;
             border: 2px solid #e0a800;
@@ -228,6 +243,7 @@
         #competition-popup.show {
             transform: translateX(0);
         }
+
         /* ------------------------------------------- */
 
 
@@ -243,6 +259,7 @@
             .container {
                 padding: 10px;
             }
+
             /* Adjust popup for smaller screens */
             #competition-popup {
                 width: 90%;
@@ -253,6 +270,7 @@
                 transform: translateX(150%);
                 border-radius: 10px;
             }
+
             #competition-popup.show {
                 transform: translateX(0);
             }
@@ -261,6 +279,12 @@
 </head>
 
 <body>
+
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TH7CR3CC" height="0" width="0"
+            style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
     <div id="competition-popup">
         🔥 **First Competition:** Blue iMac M3...
     </div>
@@ -396,7 +420,7 @@
 
     <script>
         // *** IMPORTANT: REPLACE THIS PLACEHOLDER WITH YOUR DEPLOYED GOOGLE APPS SCRIPT WEB APP URL ***
-        const GOOGLE_APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxoFWO3moC_Zxg0snYEL6iNfWI_S-nm-Q2T9uhbFumKW4goVzouigdzt32nhLb9IgA7Hw/exec'; 
+        const GOOGLE_APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxoFWO3moC_Zxg0snYEL6iNfWI_S-nm-Q2T9uhbFumKW4goVzouigdzt32nhLb9IgA7Hw/exec';
         // Example: https://script.google.com/macros/s/AKfyc.../exec
 
         async function handleSubmit(event) {
@@ -442,7 +466,7 @@
                 // but if the fetch completes without an error, we assume success.
 
                 console.log('Form submission assumed successful.');
-                
+
                 // --- On Success ---
                 document.getElementById('communityForm').style.display = 'none';
                 document.getElementById('successMessage').style.display = 'block';
@@ -450,7 +474,7 @@
             } catch (error) {
                 console.error('Submission Error:', error);
                 alert('An error occurred during submission. Please try again.');
-                
+
                 // Re-enable button on failure
                 submitButton.disabled = false;
                 submitButton.textContent = 'Join the Community';
@@ -462,7 +486,7 @@
             if (form) {
                 form.addEventListener('submit', handleSubmit);
             }
-            
+
             // --- Original Stat Animation Code (Kept for completeness) ---
             const stats = document.querySelectorAll('.stat-number');
             stats.forEach(stat => {
@@ -483,7 +507,7 @@
                 }, 30);
             });
             // -----------------------------------------------------------
-            
+
             // -----------------------------------------------------------
             // --- NEW POPUP LOGIC ---
             // -----------------------------------------------------------
@@ -505,7 +529,7 @@
                     setTimeout(() => {
                         // Hide the popup (slides back to the right)
                         popup.classList.remove('show');
-                        
+
                         // Optional: After the transition is complete (0.6s), you could hide it completely
                         // setTimeout(() => {
                         //     popup.style.display = 'none';
