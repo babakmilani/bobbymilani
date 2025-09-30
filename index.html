@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-CZDJHG7RBN"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -307,7 +306,6 @@
 
 <body>
 
-    
     <div id="membership-popup" class="page-popup">
         ⚠️ **IMPORTANT:** Only channel members can join the community.
     </div>
@@ -397,17 +395,22 @@
 
                 <div class="form-group">
                     <label for="phone">Phone Number (Optional)</label>
-                    <input type="tel" id="phone" name="phone" placeholder="For SMS notifications">
+                    <input type="tel" id="phone" name="phone" placeholder="(xxx) xxx - xxxx"
+                        pattern="^(\(\d{3}\)\s*|\d{3}[-\s]*)\d{3}[-\s]*\d{4}$"
+                        title="Phone number must be in the format (xxx) xxx-xxxx or 10 digits.">
                 </div>
 
                 <div class="form-group">
                     <label for="youtube">Your YouTube Handle/Name *</label>
-                    <input type="text" id="youtube" name="youtube" required placeholder="@username or display name">
+                    <input type="text" id="youtube" name="youtube" required placeholder="@username or display name"
+                        pattern="^@.*|.+@.+"
+                        title="If using your handle, it should start with '@'. Otherwise, use your display name.">
                 </div>
 
                 <div class="form-group">
-                    <label for="contact">Preferred Contact Method</label>
-                    <select id="contact" name="contact">
+                    <label for="contact">Preferred Contact Method *</label>
+                    <select id="contact" name="contact" required>
+                        <option value="" disabled selected>Please choose a preference</option>
                         <option value="email">Email Only</option>
                         <option value="sms">SMS Only</option>
                         <option value="both">Both Email & SMS</option>
@@ -451,6 +454,55 @@
         const GOOGLE_APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxoFWO3moC_Zxg0snYEL6iNfWI_S-nm-Q2T9uhbFumKW4goVzouigdzt32nhLb9IgA7Hw/exec';
         // Example: https://script.google.com/macros/s/AKfyc.../exec'; 
 
+        // --- NEW: Custom Validation Function ---
+        function validateForm(data) {
+            // Clean phone number: remove spaces, dashes, parentheses
+            const phone = data.phone ? data.phone.replace(/[\s\-\(\)]/g, '') : '';
+            const contactPreference = data.contact;
+
+            // 1. Basic Required Fields Check
+            // HTML 'required' handles most of this, but this is a good final check
+            if (!data.firstName || !data.lastName || !data.email || !data.youtube || !contactPreference) {
+                alert('❌ ERROR: Please fill in all required fields marked with an asterisk (*).');
+                return false;
+            }
+
+            // 2. Contact Preference Logic
+            // If SMS or Both is selected, the phone number must be present
+            if ((contactPreference === 'sms' || contactPreference === 'both') && phone.length === 0) {
+                alert('❌ ERROR: You selected SMS/Both for contact, but the Phone Number field is empty. Please enter your phone number.');
+                return false;
+            }
+
+            // 3. Phone Format and Length Check (only if filled out)
+            if (phone.length > 0) {
+                // Check if it's exactly 10 digits
+                if (!/^\d{10}$/.test(phone)) {
+                    alert('❌ ERROR: Phone number must contain exactly 10 digits (e.g., (555) 555-1234).');
+                    return false;
+                }
+            }
+
+            // 4. Terms Check
+            if (!data.terms) {
+                alert('❌ ERROR: Please agree to the Terms & Conditions to continue.');
+                return false;
+            }
+
+            // 5. Basic XSS Mitigation (Client-side scrub before sending)
+            // Note: This must be REPLICATED and strengthened on the server-side for real security!
+            for (const key in data) {
+                if (typeof data[key] === 'string') {
+                    // Replace < and > with HTML entities to neutralize potential script injection
+                    data[key] = data[key].replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                }
+            }
+
+            return true; // All checks passed
+        }
+        // --- END NEW VALIDATION FUNCTION ---
+
+
         async function handleSubmit(event) {
             event.preventDefault(); // Stop the default form submission
 
@@ -461,17 +513,11 @@
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
 
-            // --- Basic Validation ---
-            if (!data.firstName || !data.lastName || !data.email || !data.youtube) {
-                alert('Please fill in all required fields.');
-                return;
+            // --- Run custom validation first ---
+            if (!validateForm(data)) {
+                return; // Stop submission if validation fails
             }
-
-            if (!data.terms) {
-                alert('Please agree to the Terms & Conditions to continue.');
-                return;
-            }
-            // ------------------------
+            // -----------------------------------
 
             // Optional: Disable button and show loading state
             submitButton.disabled = true;
@@ -550,7 +596,7 @@
             const scrollThreshold = 300; // The scroll amount to trigger the popups
             const displayDuration = 5000; // 5 seconds in milliseconds
 
-            function showAndHidePopup(popupElement, flagName) {
+            function showAndHidePopup(popupElement) {
                 // 1. Show the popup (slides in)
                 popupElement.classList.add('show');
 
