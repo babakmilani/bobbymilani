@@ -97,6 +97,9 @@ async function handleSubmit(event) {
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
 
+    // Debug: Log what we're sending
+    console.log('Form data being sent:', data);
+
     if (!validateForm(data)) {
         return;
     }
