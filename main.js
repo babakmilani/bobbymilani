@@ -115,16 +115,16 @@ async function handleSubmit(event) {
                 urlEncodedData.append(key, data[key]);
             }
         }
-
+        
         console.log('Sending data:', urlEncodedData.toString());
-
+        
         const response = await fetch(SCRIPT_URL, {
             method: 'POST',
+            mode: 'no-cors',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: urlEncodedData.toString(),
-            redirect: 'follow'
+            body: urlEncodedData.toString()
         });
 
         console.log('Form submission assumed successful.');
