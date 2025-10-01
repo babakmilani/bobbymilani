@@ -120,16 +120,16 @@
             margin: 20px 0;
         }
 
-        .benefits li {
-            padding: 8px 0;
-            padding-left: 25px;
-            position: relative;
-        }
-
         .benefits li:before {
             content: "✨";
             position: absolute;
             left: 0;
+        }
+
+        .benefits li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
         }
 
         .signup-form {
@@ -458,8 +458,9 @@
          * YOU MUST replace 'YOUR_GOOGLE_APP_SCRIPT_URL_HERE' 
          * with the actual URL from your .env file before deploying/committing 
          * the final version of this index.html.
+         * * The URL below has now been updated to the one from your previous .env file.
          */
-        const GOOGLE_APP_SCRIPT_URL = 'YOUR_GOOGLE_APP_SCRIPT_URL_HERE';
+        const GOOGLE_APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxoFWO3moC_Zxg0snYEL6iNfWI_S-nm-Q2T9uhbFumKW4goVzouigdzt32nhLb9IgA7Hw/exec';
 
         // --- Custom Validation Function ---
         function validateForm(data) {
