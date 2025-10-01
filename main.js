@@ -98,15 +98,7 @@ async function handleSubmit(event) {
     const data = Object.fromEntries(formData.entries());
 
     // Debug: Log what we're sending
-    // Debug: Log exactly what we're sending
-    console.log('=== FORM DATA BEING SENT ===');
-    console.log('First Name:', data.firstName);
-    console.log('Last Name:', data.lastName);
-    console.log('Email:', data.email);
-    console.log('Phone:', data.phone);
-    console.log('YouTube:', data.youtube);
-    console.log('Contact:', data.contact);
-    console.log('Full data object:', data);
+    console.log('Form data being sent:', data);
 
     if (!validateForm(data)) {
         return;
@@ -117,14 +109,16 @@ async function handleSubmit(event) {
 
     try {
         // Use the injected SCRIPT_URL
+        // Create FormData object for proper encoding
+        const formDataToSend = new FormData();
+        for (const key in data) {
+            formDataToSend.append(key, data[key]);
+        }
+
         const response = await fetch(SCRIPT_URL, {
             method: 'POST',
             mode: 'no-cors',
-            cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: new URLSearchParams(data).toString(),
+            body: formDataToSend,
         });
 
         console.log('Form submission assumed successful.');
