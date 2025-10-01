@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <!-- Google Analytics Snippet -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-CZDJHG7RBN"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -436,7 +437,8 @@
 
             <div class="success-message" id="successMessage">
                 <h3>🎉 Welcome to the Community!</h3>
-                <p>Thank you for joining! You'll receive a welcome email within 24 hours with all the details about your
+                <p>Thank thank you for joining! You'll receive a welcome email within 24 hours with all the details
+                    about your
                     membership and upcoming raffles.</p>
             </div>
 
@@ -450,11 +452,16 @@
     </div>
 
     <script>
-        // *** IMPORTANT: REPLACE THIS PLACEHOLDER WITH YOUR DEPLOYED GOOGLE APPS SCRIPT WEB APP URL ***
-        const GOOGLE_APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxoFWO3moC_Zxg0snYEL6iNfWI_S-nm-Q2T9uhbFumKW4goVzouigdzt32nhLb9IgA7Hw/exec';
-        // Example: https://script.google.com/macros/s/AKfyc.../exec'; 
+        /**
+         * 🚨 IMPORTANT MANUAL STEP FOR STATIC HOSTING (like GitHub Pages) 🚨
+         * This value cannot be read from a .env file by the browser. 
+         * YOU MUST replace 'YOUR_GOOGLE_APP_SCRIPT_URL_HERE' 
+         * with the actual URL from your .env file before deploying/committing 
+         * the final version of this index.html.
+         */
+        const GOOGLE_APP_SCRIPT_URL = 'YOUR_GOOGLE_APP_SCRIPT_URL_HERE';
 
-        // --- NEW: Custom Validation Function ---
+        // --- Custom Validation Function ---
         function validateForm(data) {
             // Clean phone number: remove spaces, dashes, parentheses
             const phone = data.phone ? data.phone.replace(/[\s\-\(\)]/g, '') : '';
@@ -463,6 +470,10 @@
             // 1. Basic Required Fields Check
             // HTML 'required' handles most of this, but this is a good final check
             if (!data.firstName || !data.lastName || !data.email || !data.youtube || !contactPreference) {
+                console.error('Validation Error: Please fill in all required fields marked with an asterisk (*).');
+                // Use a custom message box instead of alert() in production apps
+                // For this example, we'll keep the alert for demonstration purposes, 
+                // but replace with a styled message box in a real app.
                 alert('❌ ERROR: Please fill in all required fields marked with an asterisk (*).');
                 return false;
             }
@@ -470,6 +481,7 @@
             // 2. Contact Preference Logic
             // If SMS or Both is selected, the phone number must be present
             if ((contactPreference === 'sms' || contactPreference === 'both') && phone.length === 0) {
+                console.error('Validation Error: Selected SMS/Both contact preference but phone number is empty.');
                 alert('❌ ERROR: You selected SMS/Both for contact, but the Phone Number field is empty. Please enter your phone number.');
                 return false;
             }
@@ -478,6 +490,7 @@
             if (phone.length > 0) {
                 // Check if it's exactly 10 digits
                 if (!/^\d{10}$/.test(phone)) {
+                    console.error('Validation Error: Phone number must contain exactly 10 digits.');
                     alert('❌ ERROR: Phone number must contain exactly 10 digits (e.g., (555) 555-1234).');
                     return false;
                 }
@@ -485,6 +498,7 @@
 
             // 4. Terms Check
             if (!data.terms) {
+                console.error('Validation Error: Terms & Conditions not agreed to.');
                 alert('❌ ERROR: Please agree to the Terms & Conditions to continue.');
                 return false;
             }
@@ -500,7 +514,7 @@
 
             return true; // All checks passed
         }
-        // --- END NEW VALIDATION FUNCTION ---
+        // --- END VALIDATION FUNCTION ---
 
 
         async function handleSubmit(event) {
@@ -508,6 +522,14 @@
 
             const form = event.target;
             const submitButton = form.querySelector('.submit-btn');
+
+            // Check if the placeholder URL is still present
+            if (GOOGLE_APP_SCRIPT_URL === 'YOUR_GOOGLE_APP_SCRIPT_URL_HERE') {
+                console.error("API Key Missing: Please update the GOOGLE_APP_SCRIPT_URL constant with your actual key before submitting.");
+                alert("⚠️ Please configure the application first. The API key placeholder must be replaced with the actual Google Apps Script URL.");
+                return;
+            }
+
 
             // Get form data as a standard object
             const formData = new FormData(form);
@@ -576,7 +598,8 @@
                         clearInterval(timer);
                     } else {
                         const suffix = finalValue.includes('K') ? 'K+' : '';
-                        stat.textContent = Math.floor(currentValue / 1000) + suffix;
+                        // Use Math.round for smoother, less jumpy animation
+                        stat.textContent = Math.round(currentValue / 1000) + suffix;
                     }
                 }, 30);
             });
