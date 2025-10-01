@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="/bobbymilani/assets/favicon-C5caq7F-.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/bobbymilani/assets/favicon-32x32-B8UpxaeQ.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/bobbymilani/assets/favicon-16x16-BYqsja-_.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/bobbymilani/assets/apple-touch-icon-DB1K3Crw.png">
+    <title>Creator Community Hub</title>
+    <style>
+        /* (Your existing CSS here) */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 200vh;
+            color: #333;
+        }
+        /* ... (rest of your CSS) ... */
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        /* ... (all remaining CSS) ... */
+
+        @media (max-width: 768px) {
+            .hero-stats {
+                gap: 20px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 10px;
+            }
+
+            .page-popup {
+                width: 90%;
+                left: 5% !important;
+                right: 5% !important;
+                top: auto !important;
+                bottom: 20px;
+                border-radius: 10px;
+                transform: translateX(0) !important;
+            }
+
+            #competition-popup {
+                transform: translateY(150%) !important;
+            }
+
+            #membership-popup {
+                transform: translateY(150%) !important;
+            }
+
+            #competition-popup.show,
+            #membership-popup.show {
+                transform: translateY(0) !important;
+            }
+        }
+    </style>
+  <script type="module" crossorigin src="/bobbymilani/assets/index-DkJHfGYM.js"></script>
+</head>
+
+<body>
+    <div id="membership-popup" class="page-popup">
+        ⚠️ **IMPORTANT:** Only channel members can join the community.
+    </div>
+
+    <div id="competition-popup" class="page-popup">
+        🔥 **First Competition:** Blue iMac M3...
+    </div>
+
+    <div class="container">
+        <header>
+            <div class="logo">Creator Hub</div>
+            <div class="tagline">Join Our Exclusive Creator Community</div>
+            <div class="hero-stats">
+                <div class="stat">
+                    <div class="stat-number">20K+</div>
+                    <div class="stat-label">YouTube Family</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">5K</div>
+                    <div class="stat-label">Target Community</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">Monthly Prizes</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="content-grid">
+            <div class="card">
+                <h2>🎯 Exclusive Community Access</h2>
+                <p>Join a select group of our most engaged viewers for behind-the-scenes content, early video previews,
+                    and direct interaction with our creator.</p>
+                <ul class="benefits">
+                    <li>Early access to new videos</li>
+                    <li>Behind-the-scenes content</li>
+                    <li>Monthly live Q&A sessions</li>
+                    <li>Community Discord server</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h2>🎁 Monthly Prize Drawings</h2>
+                <p>Every month, we host exclusive raffles with amazing prizes. From tech gadgets to unique experiences -
+                    there's always something exciting to win!</p>
+                <ul class="benefits">
+                    <li>High-value monthly prizes</li>
+                    <li>Exclusive raffle entries</li>
+                    <li>Winner spotlights</li>
+                    <li>Special bonus drawings</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h2>💬 Direct Creator Connection</h2>
+                <p>Get closer to the creative process with exclusive updates, polls on upcoming content, and the ability
+                    to influence what we create next.</p>
+                <ul class="benefits">
+                    <li>Content polls and voting</li>
+                    <li>Creator newsletters</li>
+                    <li>Feedback opportunities</li>
+                    <li>Community challenges</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card signup-form">
+            <h2>🚀 Join Our Community</h2>
+            <p>Ready to become part of something special? Join our exclusive community today!</p>
+
+            <form id="communityForm" method="POST" action="javascript:void(0);">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name *</label>
+                        <input type="text" id="firstName" name="firstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name *</label>
+                        <input type="text" id="lastName" name="lastName" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number (Optional)</label>
+                    <input type="tel" id="phone" name="phone" placeholder="(xxx) xxx - xxxx"
+                        pattern="^(\(\d{3}\)\s*|\d{3}[-\s]*)\d{3}[-\s]*\d{4}$"
+                        title="Phone number must be in the format (xxx) xxx-xxxx or 10 digits.">
+                </div>
+
+                <div class="form-group">
+                    <label for="youtube">Your YouTube Handle/Name *</label>
+                    <input type="text" id="youtube" name="youtube" required placeholder="@username or display name"
+                        pattern="^@.*|.+@.+"
+                        title="If using your handle, it should start with '@'. Otherwise, use your display name.">
+                </div>
+
+                <div class="form-group">
+                    <label for="contact">Preferred Contact Method *</label>
+                    <select id="contact" name="contact" required>
+                        <option value="" disabled selected>Please choose a preference</option>
+                        <option value="email">Email Only</option>
+                        <option value="sms">SMS Only</option>
+                        <option value="both">Both Email & SMS</option>
+                    </select>
+                </div>
+
+                <div class="checkbox-group">
+                    <label>
+                        <input type="checkbox" name="terms" required>
+                        I agree to the Terms & Conditions and Privacy Policy *
+                    </label>
+                </div>
+
+                <div class="checkbox-group">
+                    <label>
+                        <input type="checkbox" name="marketing">
+                        I want to receive marketing communications and special offers
+                    </label>
+                </div>
+
+                <button type="submit" class="submit-btn">Join the Community</button>
+            </form>
+
+            <div class="success-message" id="successMessage">
+                <h3>🎉 Welcome to the Community!</h3>
+                <p>Thank thank you for joining! You'll receive a welcome email within 24 hours with all the details
+                    about your
+                    membership and upcoming raffles.</p>
+            </div>
+
+            <div class="legal-text">
+                By joining, you agree to receive periodic emails about community updates, exclusive content, and monthly
+                raffle announcements. You can unsubscribe at any time. This community operates independently from
+                YouTube. Winners will be selected randomly and contacted via provided contact information. Prizes may
+                vary by month and location restrictions may apply.
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
