@@ -1,9 +1,8 @@
-// This file uses the placeholder names that your build tool will replace
-// with the actual values from your local .env file.
+// main.js
 
-// IMPORTANT: Use the correct prefix (VITE_ or REACT_APP_) based on your build tool.
-const SCRIPT_URL = process.env.VITE_01;
-const ANALYTICS_ID = process.env.VITE_02;
+// 🚨 Use import.meta.env for Vite environment variables
+const SCRIPT_URL = import.meta.env.VITE_GOOGLE_APP_SCRIPT_URL;
+const ANALYTICS_ID = import.meta.env.VITE_GOOGLE_ANALYTICS_ID;
 
 
 /* * -------------------
@@ -11,7 +10,8 @@ const ANALYTICS_ID = process.env.VITE_02;
  * -------------------
  */
 function loadGoogleAnalytics(id) {
-    if (!id || id === 'G-CZDJHG7RBN') return;
+    // Corrected check: Only return if ID is missing (falsy)
+    if (!id) return;
 
     const script1 = document.createElement('script');
     script1.async = true;
@@ -83,9 +83,9 @@ async function handleSubmit(event) {
     const form = event.target;
     const submitButton = form.querySelector('.submit-btn');
 
-    // NOTE: This check ensures the build tool correctly replaced the placeholder
-    if (!SCRIPT_URL || SCRIPT_URL.includes('process.env')) {
-        console.error("API Key Missing: The build process failed to inject the URL. Please check your .env prefix.");
+    // Check if SCRIPT_URL was successfully injected (i.e., not undefined)
+    if (!SCRIPT_URL) {
+        console.error("API Key Missing: SCRIPT_URL is undefined. Check your .env file and build process.");
         alert("⚠️ Configuration Error: The application URL is missing. Check your build setup.");
         return;
     }
@@ -102,6 +102,7 @@ async function handleSubmit(event) {
     submitButton.textContent = 'Submitting...';
 
     try {
+        // Use the injected SCRIPT_URL
         const response = await fetch(SCRIPT_URL, {
             method: 'POST',
             mode: 'no-cors',
