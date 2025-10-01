@@ -108,17 +108,23 @@ async function handleSubmit(event) {
     submitButton.textContent = 'Submitting...';
 
     try {
-        // Use the injected SCRIPT_URL
-        // Create FormData object for proper encoding
-        const formDataToSend = new FormData();
+        // Convert data to URL-encoded format
+        const urlEncodedData = new URLSearchParams();
         for (const key in data) {
-            formDataToSend.append(key, data[key]);
+            if (data[key] !== undefined && data[key] !== null) {
+                urlEncodedData.append(key, data[key]);
+            }
         }
+
+        console.log('Sending data:', urlEncodedData.toString());
 
         const response = await fetch(SCRIPT_URL, {
             method: 'POST',
-            mode: 'no-cors',
-            body: formDataToSend,
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: urlEncodedData.toString(),
+            redirect: 'follow'
         });
 
         console.log('Form submission assumed successful.');
