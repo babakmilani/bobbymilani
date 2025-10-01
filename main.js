@@ -1,5 +1,8 @@
 // main.js
 
+// Import CSS at the top - Vite will process this
+import './style.css';
+
 // 🚨 Use import.meta.env for Vite environment variables
 const SCRIPT_URL = import.meta.env.VITE_GOOGLE_APP_SCRIPT_URL;
 const ANALYTICS_ID = import.meta.env.VITE_GOOGLE_ANALYTICS_ID;
