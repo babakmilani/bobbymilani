@@ -2,16 +2,6 @@
 <html lang="en">
 
 <head>
-    <!-- Google Analytics Snippet -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CZDJHG7RBN"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
-
-        gtag('config', 'G-CZDJHG7RBN');
-    </script>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
@@ -29,7 +19,6 @@
         body {
             font-family: 'Arial', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            /* We need more content for scrolling, so min-height is critical for testing! */
             min-height: 200vh;
             color: #333;
         }
@@ -212,9 +201,6 @@
             margin-top: 20px;
         }
 
-        /* ------------------------------------------- */
-        /* --- POPUP STYLES --- */
-        /* ------------------------------------------- */
         .page-popup {
             position: fixed;
             top: 20%;
@@ -227,7 +213,6 @@
             text-align: center;
         }
 
-        /* Right-Side Competition Popup */
         #competition-popup {
             right: 0;
             transform: translateX(100%);
@@ -241,25 +226,18 @@
             transform: translateX(0);
         }
 
-        /* Left-Side Membership Popup */
         #membership-popup {
             left: 0;
             transform: translateX(-100%);
-            /* Start off-screen to the left */
             background: #d9534f;
-            /* A warning/restrictive color (red) */
             color: white;
             border-radius: 0 10px 10px 0;
-            /* Rounded only on the right side */
             border: 2px solid #c9302c;
         }
 
         #membership-popup.show {
             transform: translateX(0);
         }
-
-        /* ------------------------------------------- */
-
 
         @media (max-width: 768px) {
             .hero-stats {
@@ -274,7 +252,6 @@
                 padding: 10px;
             }
 
-            /* Adjust popups for smaller screens (they will both move to the bottom-center) */
             .page-popup {
                 width: 90%;
                 left: 5% !important;
@@ -282,23 +259,19 @@
                 top: auto !important;
                 bottom: 20px;
                 border-radius: 10px;
-                /* Reset transforms so 'show' can bring it into view */
                 transform: translateX(0) !important;
             }
 
             #competition-popup {
-                /* Hide competition popup a bit lower on mobile if both are visible */
                 transform: translateY(150%) !important;
             }
 
             #membership-popup {
-                /* Hide membership popup a bit higher on mobile if both are visible */
                 transform: translateY(150%) !important;
             }
 
             #competition-popup.show,
             #membership-popup.show {
-                /* On mobile, slide UP instead of side-to-side */
                 transform: translateY(0) !important;
             }
         }
@@ -452,44 +425,44 @@
     </div>
 
     <script>
-        /**
-         * 🚨 IMPORTANT MANUAL STEP FOR STATIC HOSTING (like GitHub Pages) 🚨
-         * This value cannot be read from a .env file by the browser. 
-         * YOU MUST replace 'YOUR_GOOGLE_APP_SCRIPT_URL_HERE' 
-         * with the actual URL from your .env file before deploying/committing 
-         * the final version of this index.html.
-         * * The URL below has now been updated to the one from your previous .env file.
-         */
         const GOOGLE_APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxoFWO3moC_Zxg0snYEL6iNfWI_S-nm-Q2T9uhbFumKW4goVzouigdzt32nhLb9IgA7Hw/exec';
+        const GOOGLE_ANALYTICS_ID = 'G-CZDJHG7RBN';
 
-        // --- Custom Validation Function ---
+        function loadGoogleAnalytics(id) {
+            if (!id || id === 'YOUR_GA_ID_HERE') return;
+
+            const script1 = document.createElement('script');
+            script1.async = true;
+            script1.src = `https://www.googletagmanager.com/gtag/js?id=${id}`;
+            document.head.appendChild(script1);
+
+            const script2 = document.createElement('script');
+            script2.textContent = `
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${id}');
+            `;
+            document.head.appendChild(script2);
+        }
+
         function validateForm(data) {
-            // Clean phone number: remove spaces, dashes, parentheses
             const phone = data.phone ? data.phone.replace(/[\s\-\(\)]/g, '') : '';
             const contactPreference = data.contact;
 
-            // 1. Basic Required Fields Check
-            // HTML 'required' handles most of this, but this is a good final check
             if (!data.firstName || !data.lastName || !data.email || !data.youtube || !contactPreference) {
                 console.error('Validation Error: Please fill in all required fields marked with an asterisk (*).');
-                // Use a custom message box instead of alert() in production apps
-                // For this example, we'll keep the alert for demonstration purposes, 
-                // but replace with a styled message box in a real app.
                 alert('❌ ERROR: Please fill in all required fields marked with an asterisk (*).');
                 return false;
             }
 
-            // 2. Contact Preference Logic
-            // If SMS or Both is selected, the phone number must be present
             if ((contactPreference === 'sms' || contactPreference === 'both') && phone.length === 0) {
                 console.error('Validation Error: Selected SMS/Both contact preference but phone number is empty.');
                 alert('❌ ERROR: You selected SMS/Both for contact, but the Phone Number field is empty. Please enter your phone number.');
                 return false;
             }
 
-            // 3. Phone Format and Length Check (only if filled out)
             if (phone.length > 0) {
-                // Check if it's exactly 10 digits
                 if (!/^\d{10}$/.test(phone)) {
                     console.error('Validation Error: Phone number must contain exactly 10 digits.');
                     alert('❌ ERROR: Phone number must contain exactly 10 digits (e.g., (555) 555-1234).');
@@ -497,34 +470,27 @@
                 }
             }
 
-            // 4. Terms Check
             if (!data.terms) {
                 console.error('Validation Error: Terms & Conditions not agreed to.');
                 alert('❌ ERROR: Please agree to the Terms & Conditions to continue.');
                 return false;
             }
 
-            // 5. Basic XSS Mitigation (Client-side scrub before sending)
-            // Note: This must be REPLICATED and strengthened on the server-side for real security!
             for (const key in data) {
                 if (typeof data[key] === 'string') {
-                    // Replace < and > with HTML entities to neutralize potential script injection
                     data[key] = data[key].replace(/</g, "&lt;").replace(/>/g, "&gt;");
                 }
             }
 
-            return true; // All checks passed
+            return true;
         }
-        // --- END VALIDATION FUNCTION ---
-
 
         async function handleSubmit(event) {
-            event.preventDefault(); // Stop the default form submission
+            event.preventDefault();
 
             const form = event.target;
             const submitButton = form.querySelector('.submit-btn');
 
-            // Check if the placeholder URL is still present
             if (GOOGLE_APP_SCRIPT_URL === 'YOUR_GOOGLE_APP_SCRIPT_URL_HERE') {
                 console.error("API Key Missing: Please update the GOOGLE_APP_SCRIPT_URL constant with your actual key before submitting.");
                 alert("⚠️ Please configure the application first. The API key placeholder must be replaced with the actual Google Apps Script URL.");
@@ -532,39 +498,29 @@
             }
 
 
-            // Get form data as a standard object
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
 
-            // --- Run custom validation first ---
             if (!validateForm(data)) {
-                return; // Stop submission if validation fails
+                return;
             }
-            // -----------------------------------
 
-            // Optional: Disable button and show loading state
             submitButton.disabled = true;
             submitButton.textContent = 'Submitting...';
 
             try {
-                // Send data to Google Apps Script Web App
                 const response = await fetch(GOOGLE_APP_SCRIPT_URL, {
                     method: 'POST',
-                    mode: 'no-cors', // Essential for Google Apps Script to prevent CORS issues
+                    mode: 'no-cors',
                     cache: 'no-cache',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
                     },
-                    // Convert the data object into a URL-encoded string for the Apps Script to read easily
                     body: new URLSearchParams(data).toString(),
                 });
 
-                // Since we use 'no-cors', we can't check the response directly, 
-                // but if the fetch completes without an error, we assume success.
-
                 console.log('Form submission assumed successful.');
 
-                // --- On Success ---
                 document.getElementById('communityForm').style.display = 'none';
                 document.getElementById('successMessage').style.display = 'block';
 
@@ -572,7 +528,6 @@
                 console.error('Submission Error:', error);
                 alert('An error occurred during submission. Please try again.');
 
-                // Re-enable button on failure
                 submitButton.disabled = false;
                 submitButton.textContent = 'Join the Community';
             }
@@ -584,7 +539,6 @@
                 form.addEventListener('submit', handleSubmit);
             }
 
-            // --- Original Stat Animation Code (Kept for completeness) ---
             const stats = document.querySelectorAll('.stat-number');
             stats.forEach(stat => {
                 const finalValue = stat.textContent;
@@ -599,66 +553,51 @@
                         clearInterval(timer);
                     } else {
                         const suffix = finalValue.includes('K') ? 'K+' : '';
-                        // Use Math.round for smoother, less jumpy animation
                         stat.textContent = Math.round(currentValue / 1000) + suffix;
                     }
                 }, 30);
             });
-            // -----------------------------------------------------------
-
-            // -----------------------------------------------------------
-            // --- UPDATED POPUP LOGIC TO HANDLE BOTH ---
-            // -----------------------------------------------------------
 
             const competitionPopup = document.getElementById('competition-popup');
             const membershipPopup = document.getElementById('membership-popup');
 
-            // Flags to ensure each popup only shows once per page load
             let hasShownCompetition = false;
             let hasShownMembership = false;
 
-            const scrollThreshold = 300; // The scroll amount to trigger the popups
-            const displayDuration = 5000; // 5 seconds in milliseconds
+            const scrollThreshold = 300;
+            const displayDuration = 5000;
+            const offsetDelay = 1000;
 
             function showAndHidePopup(popupElement) {
-                // 1. Show the popup (slides in)
                 popupElement.classList.add('show');
 
-                // 2. Set a timer to hide the popup after 5 seconds
                 setTimeout(() => {
-                    // Hide the popup (slides back out)
                     popupElement.classList.remove('show');
                 }, displayDuration);
             }
-
-            // To ensure the two popups don't appear at exactly the same time, 
-            // we'll offset the second one slightly.
-            const offsetDelay = 1000; // 1 second offset
-
+            
             function handleScroll() {
                 if (window.scrollY > scrollThreshold) {
 
-                    // Show Competition Popup (Right)
                     if (!hasShownCompetition) {
                         hasShownCompetition = true;
                         showAndHidePopup(competitionPopup);
                     }
 
-                    // Show Membership Popup (Left), delayed by 1 second
                     if (!hasShownMembership) {
                         hasShownMembership = true;
                         setTimeout(() => {
                             showAndHidePopup(membershipPopup);
-                            // After both have run, remove the scroll listener
                             window.removeEventListener('scroll', handleScroll);
                         }, offsetDelay);
                     }
                 }
             }
 
-            // Listen for the scroll event
             window.addEventListener('scroll', handleScroll);
-            // -----------------------------------------------------------
+            
+            // Initialize GA
+            loadGoogleAnalytics(GOOGLE_ANALYTICS_ID);
         });
     </script>
 </body>
