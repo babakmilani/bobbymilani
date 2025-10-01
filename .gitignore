@@ -5,6 +5,5 @@
 # Your project might use 'dist', 'build', 'out', etc.
 /dist
 /build
-
 # Node dependencies
 /node_modules
