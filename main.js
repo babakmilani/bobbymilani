@@ -82,20 +82,21 @@ function validateForm(data) {
  */
 async function handleSubmit(event) {
     event.preventDefault();
-
     const form = event.target;
     const submitButton = form.querySelector('.submit-btn');
 
-    // Check if SCRIPT_URL was successfully injected (i.e., not undefined)
     if (!SCRIPT_URL) {
         console.error("API Key Missing: SCRIPT_URL is undefined. Check your .env file and build process.");
-        alert("⚠️ Configuration Error: The application URL is missing. Check your build setup.");
+        alert("⚠ Configuration Error: The application URL is missing. Check your build setup.");
         return;
     }
 
-
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
+
+    // FIX: Explicitly handle checkboxes
+    data.terms = form.querySelector('input[name="terms"]').checked ? 'on' : '';
+    data.marketing = form.querySelector('input[name="marketing"]').checked ? 'on' : '';
 
     // Debug: Log what we're sending
     console.log('Form data being sent:', data);
@@ -108,16 +109,15 @@ async function handleSubmit(event) {
     submitButton.textContent = 'Submitting...';
 
     try {
-        // Convert data to URL-encoded format
         const urlEncodedData = new URLSearchParams();
         for (const key in data) {
             if (data[key] !== undefined && data[key] !== null) {
                 urlEncodedData.append(key, data[key]);
             }
         }
-        
+
         console.log('Sending data:', urlEncodedData.toString());
-        
+
         const response = await fetch(SCRIPT_URL, {
             method: 'POST',
             mode: 'no-cors',
@@ -128,14 +128,12 @@ async function handleSubmit(event) {
         });
 
         console.log('Form submission assumed successful.');
-
         document.getElementById('communityForm').style.display = 'none';
         document.getElementById('successMessage').style.display = 'block';
 
     } catch (error) {
         console.error('Submission Error:', error);
         alert('An error occurred during submission. Please try again.');
-
         submitButton.disabled = false;
         submitButton.textContent = 'Join the Community';
     }
