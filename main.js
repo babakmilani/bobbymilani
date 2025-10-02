@@ -7,6 +7,11 @@ import './style.css';
 const SCRIPT_URL = import.meta.env.VITE_GOOGLE_APP_SCRIPT_URL;
 const ANALYTICS_ID = import.meta.env.VITE_GOOGLE_ANALYTICS_ID;
 
+// THEN log them
+console.log('=== ENVIRONMENT CHECK ===');
+console.log('SCRIPT_URL:', SCRIPT_URL);
+console.log('ANALYTICS_ID:', ANALYTICS_ID);
+console.log('========================');
 
 /* * -------------------
  * Google Analytics Initialization
