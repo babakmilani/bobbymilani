@@ -87,23 +87,17 @@ async function handleSubmit(event) {
     const submitButton = form.querySelector('.submit-btn');
 
     if (!SCRIPT_URL) {
-        console.error("⚠️ Configuration Error: The application URL is missing. Check your .env file and build setup.");
+        console.error("⚠️ Configuration Error: The application URL is missing.");
         return;
     }
 
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
 
-    // --- FIX: Convert checkbox values ("on" or undefined/missing) to clean boolean or string values ---
-    // If the checkbox is checked, formData.entries() gives 'on'. If unchecked, it's missing from formData.
-    // We check the raw DOM element for a reliable true/false state.
     data.terms = form.querySelector('input[name="terms"]').checked;
     data.marketing = form.querySelector('input[name="marketing"]').checked;
 
-    // The select box for 'contact' is already a clean string like 'email', 'sms', or 'both'.
-
-    // Debug: Log what we're sending
-    console.log('Form data being sent (JSON conversion):', data);
+    console.log('Form data being sent:', data);
 
     if (!validateForm(data)) {
         return;
@@ -113,29 +107,24 @@ async function handleSubmit(event) {
     submitButton.textContent = 'Submitting...';
 
     try {
-        // --- CRITICAL FIX: Send as JSON instead of URL-encoded ---
-        const response = await fetch(SCRIPT_URL, {
+        await fetch(SCRIPT_URL, {
             method: 'POST',
-            mode: 'no-cors',
+            mode: 'no-cors', // Required for Google Apps Script
             headers: {
-                // Set the content type to JSON
                 'Content-Type': 'application/json',
             },
-            // Send the JavaScript object directly as a JSON string
             body: JSON.stringify(data)
         });
 
-        console.log('Form submission assumed successful (no-cors response).');
+        console.log('Form submitted (no-cors mode - response not readable)');
 
-        // Check if the Apps Script URL actually returned an error, although no-cors mode might hide it.
-        // We rely mostly on the backend logs for actual success/failure detection.
-
+        // Show success message after submission
         document.getElementById('communityForm').style.display = 'none';
         document.getElementById('successMessage').style.display = 'block';
 
     } catch (error) {
         console.error('Submission Error:', error);
-        console.error('An error occurred during submission. Please try again.');
+        alert('An error occurred during submission. Please try again.');
 
         submitButton.disabled = false;
         submitButton.textContent = 'Join the Community';
