@@ -24,8 +24,10 @@ This project enables content creators to collect and manage community member sig
 - **Google Sheets API** - Data storage and management
 - **Gmail API** - Automated email notifications
 
-### Deployment
-- **GitHub Pages** - Static site hosting with custom domain
+### Deployment & Infrastructure
+- **GitHub Pages** - Static site hosting
+- **Cloudflare** - DNS management, CDN, and DDoS protection
+- **SSL/TLS** - Full (strict) encryption for secure connections
 - **Environment Variables** - Secure configuration management
 
 ## 📋 Features
@@ -214,7 +216,7 @@ npm run build
 
 This generates optimized files in the `docs/` directory.
 
-### Deploy to GitHub Pages
+### Deploy to GitHub Pages with Cloudflare
 
 1. **Configure GitHub Pages:**
    - Repository Settings → Pages
@@ -222,21 +224,70 @@ This generates optimized files in the `docs/` directory.
    - Branch: `main`
    - Folder: `/docs`
 
-2. **Custom Domain (Optional):**
-   - Add CNAME file to `public/` directory
-   - Configure DNS with your domain provider:
-     ```
-     Type: CNAME
-     Name: www
-     Value: yourusername.github.io
-     ```
+2. **Configure Cloudflare DNS:**
+   
+   **Step 1: Add site to Cloudflare**
+   - Sign up/log in to [Cloudflare](https://dash.cloudflare.com)
+   - Click "Add a Site" and enter your domain
+   - Select the Free plan
+   
+   **Step 2: Update nameservers at your domain registrar**
+   - Cloudflare will provide two nameservers (e.g., `bob.ns.cloudflare.com`)
+   - Go to your domain registrar (GoDaddy, Namecheap, etc.)
+   - Replace existing nameservers with Cloudflare's nameservers
+   - Wait 24-48 hours for propagation (usually faster)
+   
+   **Step 3: Configure DNS records in Cloudflare**
+   ```
+   Type: CNAME
+   Name: @
+   Target: yourusername.github.io
+   Proxy status: Proxied (orange cloud)
+   
+   Type: CNAME
+   Name: www
+   Target: yourusername.github.io
+   Proxy status: Proxied (orange cloud)
+   ```
 
-3. **Push to GitHub:**
+3. **Configure SSL/TLS Security:**
+   - In Cloudflare dashboard → SSL/TLS
+   - Set encryption mode to **"Full"** or **"Full (strict)"**
+   - This ensures end-to-end encryption between visitors and your site
+   - Enable "Always Use HTTPS" under SSL/TLS → Edge Certificates
+
+4. **Additional Cloudflare Security (Optional):**
+   - Enable "Automatic HTTPS Rewrites"
+   - Turn on "Brotli" compression for faster loading
+   - Configure page rules for caching optimization
+   - Enable "Email Address Obfuscation" to protect against scrapers
+
+5. **Configure GitHub Pages custom domain:**
+   - In your repository, add a `CNAME` file to the `public/` directory:
+     ```
+     bobbymilani.com
+     ```
+   - GitHub Pages will automatically detect and configure your custom domain
+
+6. **Verify deployment:**
+   - Visit your custom domain (https://bobbymilani.com)
+   - Check that SSL certificate shows as valid (lock icon in browser)
+   - Test both `www` and non-`www` versions
+
+7. **Push to GitHub:**
 ```bash
 git add .
-git commit -m "Deploy to GitHub Pages"
+git commit -m "Deploy to GitHub Pages with Cloudflare"
 git push origin main
 ```
+
+**Benefits of Cloudflare Integration:**
+- **DDoS Protection** - Automatic mitigation of malicious traffic
+- **CDN** - Global content delivery for faster load times
+- **SSL/TLS** - Free SSL certificate with full encryption
+- **DNS Management** - Fast and reliable DNS resolution
+- **Analytics** - Traffic insights and threat monitoring
+- **Caching** - Reduced server load and improved performance
 
 ## 🐛 Troubleshooting
 
@@ -288,11 +339,26 @@ Youtube Channel Signup/
 
 ## 🔐 Security Considerations
 
+### Application Security
 - Environment variables stored in `.env` (not committed to Git)
 - Input sanitization on both client and server side
 - OAuth scopes follow principle of least privilege
 - Web app deployed with proper access controls
 - No sensitive data exposed in client-side code
+
+### Infrastructure Security
+- **Cloudflare Proxy:** All traffic routes through Cloudflare's network, hiding origin server IP
+- **SSL/TLS Full Mode:** End-to-end encryption from visitor to GitHub Pages
+- **HTTPS Enforcement:** Automatic redirect from HTTP to HTTPS
+- **DDoS Protection:** Cloudflare's automatic mitigation protects against attacks
+- **Web Application Firewall (WAF):** Available on higher tiers for advanced threat protection
+
+### Best Practices Implemented
+- Custom domain with SSL/TLS certificate
+- HTTPS-only policy enforced
+- Secure header configurations via Cloudflare
+- Regular dependency updates
+- Minimal attack surface with static site hosting
 
 ## 📈 Future Enhancements
 
@@ -302,14 +368,46 @@ Youtube Channel Signup/
 - [ ] Export data to CSV functionality
 - [ ] Email confirmation to submitters
 - [ ] Integration with Discord for community management
+- [ ] Cloudflare Analytics for advanced traffic insights
+- [ ] Rate limiting via Cloudflare Workers
+- [ ] A/B testing for conversion optimization
 
 ## 📝 Lessons Learned
 
-1. **CORS with Google Apps Script:** Standard CORS doesn't work with Apps Script web apps; `no-cors` mode is required
-2. **Content-Type Handling:** Apps Script may receive JSON as `text/plain`
-3. **OAuth Complexity:** Proper scope configuration is critical for permissions
-4. **Deployment Workflow:** Code changes require new deployments with updated URLs
-5. **Environment Variables:** Vite requires `VITE_` prefix for exposed variables
+### Technical Challenges Overcome
+
+1. **CORS with Google Apps Script:** 
+   - Challenge: Standard CORS doesn't work with Apps Script web apps
+   - Solution: Use `no-cors` mode and rely on server-side logging for error detection
+
+2. **Content-Type Handling:** 
+   - Challenge: Apps Script receives JSON as `text/plain` instead of `application/json`
+   - Solution: Parse JSON from `e.postData.contents` regardless of content-type header
+
+3. **OAuth Complexity:** 
+   - Challenge: Multiple authorization scopes needed for Sheets, Email, and User Info
+   - Solution: Properly configured `appsscript.json` with all required scopes
+   - Learning: Each scope requires explicit authorization and redeployment
+
+4. **Deployment Workflow:** 
+   - Challenge: Code changes don't automatically update running web app
+   - Solution: Create new deployment after each code change and update endpoint URL
+   - Learning: Test deployments vs. production deployments require different management
+
+5. **Environment Variables in Vite:** 
+   - Challenge: Standard `.env` variables aren't exposed to client-side code
+   - Solution: Use `VITE_` prefix for variables that need to be bundled
+   - Security consideration: Never expose secrets, only public endpoints
+
+6. **DNS and SSL Configuration:**
+   - Challenge: Setting up custom domain with proper HTTPS encryption
+   - Solution: Cloudflare nameservers + Full SSL/TLS mode
+   - Learning: DNS propagation can take time; Cloudflare proxy provides security benefits
+
+7. **Static Site Limitations:**
+   - Challenge: No backend for form processing
+   - Solution: Leverage Google Apps Script as a serverless backend
+   - Trade-off: Less control but zero infrastructure management
 
 ## 🤝 Contributing
 
@@ -322,7 +420,7 @@ MIT License - feel free to use this project for your own purposes.
 ## 👤 Author
 
 **Your Name**
-- GitHub: [@yourusername](https://github.com/yourusername)
+- GitHub: [@yourusername](https://github.com/babakmilani)
 - Website: [bobbymilani.com](https://bobbymilani.com)
 
 ## 🙏 Acknowledgments
