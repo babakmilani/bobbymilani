@@ -189,19 +189,58 @@
     </div>
 
     <script>
+        let popupsTriggered = false;
+
+        // Function to close popups (if you want close buttons)
+        function closePopup(popupId) {
+            const popup = document.getElementById(popupId);
+            if (popup) {
+                popup.style.display = 'none';
+            }
+        }
+
+        // Scroll detection
+        function handleScroll() {
+            // Don't trigger if already shown
+            if (popupsTriggered) return;
+
+            const scrollPosition = window.scrollY;
+            const triggerPoint = 300; // Pixels scrolled before popups appear
+
+            if (scrollPosition > triggerPoint) {
+                popupsTriggered = true;
+
+                const leftPopup = document.getElementById('membership-popup');
+                const rightPopup = document.getElementById('competition-popup');
+
+                console.log('Triggering popups...', leftPopup, rightPopup);
+
+                // Slide in the Left Popup first
+                setTimeout(() => {
+                    leftPopup.classList.add('active-left');
+                    console.log('Left popup activated on scroll');
+                }, 200);
+
+                // Slide in the Right Popup shortly after
+                setTimeout(() => {
+                    rightPopup.classList.add('active-right');
+                    console.log('Right popup activated on scroll');
+                }, 700);
+
+                // Auto-hide popups after 10 seconds (optional)
+                setTimeout(() => {
+                    leftPopup.style.display = 'none';
+                    rightPopup.style.display = 'none';
+                }, 10000);
+            }
+        }
+
+        // Listen for scroll events
+        window.addEventListener('scroll', handleScroll);
+
+        // Also check on load in case user refreshes mid-page
         document.addEventListener('DOMContentLoaded', () => {
-            const leftPopup = document.getElementById('membership-popup');
-            const rightPopup = document.getElementById('competition-popup');
-
-            // Slide in the Left Popup first
-            setTimeout(() => {
-                leftPopup.classList.add('active-left');
-            }, 500); // Popup 1 slides in after 0.5 seconds
-
-            // Slide in the Right Popup shortly after
-            setTimeout(() => {
-                rightPopup.classList.add('active-right');
-            }, 1000); // Popup 2 slides in after 1.0 second
+            handleScroll();
         });
     </script>
     <script type="module" src="/main.js"></script>
