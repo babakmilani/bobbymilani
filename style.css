@@ -232,7 +232,6 @@ select:focus {
     border-radius: 8px;
     text-align: center;
     display: none;
-    /* Initially hidden, shown by JS */
 }
 
 .success-message h3 {
@@ -249,16 +248,30 @@ select:focus {
     border-top: 1px dashed #eee;
 }
 
-/* Page Popups (Membership/Competition) */
+/* Ad Placeholder Styling */
+.ad-placeholder {
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 2px dashed #667eea !important;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 40px 0;
+}
+
+.ad-label {
+    font-size: 0.8em;
+    color: #666;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+
+/* --- POPUP SLIDE-IN STYLES (MODIFIED) --- */
 .page-popup {
     position: fixed;
     top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     width: 400px;
     padding: 20px;
     background: #fff;
-    border: 3px solid #ff4136;
     border-radius: 15px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
     z-index: 1000;
@@ -266,22 +279,40 @@ select:focus {
     font-weight: bold;
     font-size: 1.1em;
     color: #333;
-    /* Initial state (hidden off-screen) */
-    opacity: 0;
-    transform: translate(-50%, -150%);
-    transition: opacity 0.5s ease, transform 0.5s ease;
+    /* Transition for smooth sliding (bouncy effect) */
+    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* Popups visible state (controlled by JS) */
-.page-popup.show {
-    opacity: 1;
-    transform: translate(-50%, -50%);
+/* Membership Popup (Left Slide) */
+#membership-popup {
+    left: 0;
+    border: 3px solid #ff4136;
+    /* Start position: fully off-screen to the left */
+    transform: translate(-100%, -50%);
 }
 
-/* Competition popup style (e.g., if you want a different look) */
+/* Competition Popup (Right Slide) */
 #competition-popup {
-    border-color: #ffdc00;
+    right: 0;
+    border: 3px solid #ffdc00;
+    /* Start position: fully off-screen to the right */
+    transform: translate(100%, -50%);
 }
+
+/* Target state: slides into view from the left */
+.page-popup.active-left {
+    /* Slides in and stops 20px from the left edge */
+    transform: translate(20px, -50%);
+}
+
+/* Target state: slides into view from the right */
+.page-popup.active-right {
+    /* Slides in and stops 20px from the right edge */
+    transform: translate(-20px, -50%);
+}
+
+/* --- END POPUP STYLES --- */
+
 
 /* Media Queries for Responsiveness */
 @media (max-width: 768px) {
@@ -298,31 +329,27 @@ select:focus {
         padding: 10px;
     }
 
-    /* Mobile Popup Styling */
+    /* Mobile Popup Styling (Stack from bottom) */
     .page-popup {
         width: 90%;
-        left: 5% !important;
-        right: 5% !important;
+        left: 50% !important;
+        right: auto !important;
         top: auto !important;
         bottom: 20px;
         border-radius: 10px;
-        /* Reset transform for mobile placement */
-        transform: translate(0, 150%) !important;
-    }
-
-    /* Initial hidden state for mobile popups */
-    #competition-popup {
-        transform: translate(0, 150%) !important;
-    }
-
-    #membership-popup {
-        transform: translate(0, 150%) !important;
+        /* Default Start position: off-screen below the bottom */
+        transform: translate(-50%, 150%) !important;
     }
 
     /* Show state for mobile popups (brings them up from the bottom) */
-    #competition-popup.show,
-    #membership-popup.show {
-        transform: translate(0, 0) !important;
+    .page-popup.active-left {
+        /* First popup sits right at the bottom edge */
+        transform: translate(-50%, 0) !important;
+    }
+
+    .page-popup.active-right {
+        /* Second popup sits higher to stack on top of the first */
+        transform: translate(-50%, -100px) !important;
     }
 }
 
@@ -331,7 +358,7 @@ select:focus {
         font-size: 2.5em;
     }
 
-    .stat-number {
+    .stat-number { 
         font-size: 2em;
     }
 
