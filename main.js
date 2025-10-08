@@ -13,7 +13,6 @@ const ANALYTICS_ID = import.meta.env.VITE_GOOGLE_ANALYTICS_ID;
  * -------------------
  */
 function loadGoogleAnalytics(id) {
-    // Corrected check: Only return if ID is missing (falsy)
     if (!id) return;
 
     const script1 = document.createElement('script');
@@ -37,13 +36,11 @@ function loadGoogleAnalytics(id) {
  * -------------------
  */
 function validateForm(data) {
-    // Clean phone number for validation
     const phone = data.phone ? data.phone.replace(/[\s\-\(\)]/g, '') : '';
     const contactPreference = data.contact;
 
     if (!data.firstName || !data.lastName || !data.email || !data.youtube || !contactPreference) {
         console.error('❌ Validation Error: Please fill in all required fields marked with an asterisk (*).');
-        // NOTE: Replacing alert() with a console log as per best practice in this environment
         return false;
     }
 
@@ -59,7 +56,6 @@ function validateForm(data) {
         }
     }
 
-    // Checkbox validation needs to check for boolean truthiness
     if (!data.terms) {
         console.error('❌ Validation Error: Please agree to the Terms & Conditions to continue.');
         return false;
@@ -109,7 +105,7 @@ async function handleSubmit(event) {
     try {
         await fetch(SCRIPT_URL, {
             method: 'POST',
-            mode: 'no-cors', // Required for Google Apps Script
+            mode: 'no-cors',
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -118,7 +114,6 @@ async function handleSubmit(event) {
 
         console.log('Form submitted (no-cors mode - response not readable)');
 
-        // Show success message after submission
         document.getElementById('communityForm').style.display = 'none';
         document.getElementById('successMessage').style.display = 'block';
 
@@ -133,7 +128,7 @@ async function handleSubmit(event) {
 
 
 /* * -------------------
- * DOM Initialization and Popups
+ * DOM Initialization
  * -------------------
  */
 document.addEventListener('DOMContentLoaded', function () {
@@ -142,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function () {
         form.addEventListener('submit', handleSubmit);
     }
 
-    // Stat Counter Animation (Unchanged Logic)
+    // Stat Counter Animation
     const stats = document.querySelectorAll('.stat-number');
     stats.forEach(stat => {
         const finalValue = stat.textContent;
@@ -157,50 +152,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 clearInterval(timer);
             } else {
                 const suffix = finalValue.includes('K') ? 'K+' : '';
-                // Adjusted rounding for better counter visualization
                 stat.textContent = Math.round(currentValue).toLocaleString() + suffix;
             }
         }, 30);
     });
-
-    // Popup Logic (Unchanged Logic)
-    const competitionPopup = document.getElementById('competition-popup');
-    const membershipPopup = document.getElementById('membership-popup');
-
-    let hasShownCompetition = false;
-    let hasShownMembership = false;
-
-    const scrollThreshold = 300;
-    const displayDuration = 5000;
-    const offsetDelay = 1000;
-
-    function showAndHidePopup(popupElement) {
-        popupElement.classList.add('show');
-
-        setTimeout(() => {
-            popupElement.classList.remove('show');
-        }, displayDuration);
-    }
-
-    function handleScroll() {
-        if (window.scrollY > scrollThreshold) {
-
-            if (!hasShownCompetition) {
-                hasShownCompetition = true;
-                showAndHidePopup(competitionPopup);
-            }
-
-            if (!hasShownMembership) {
-                hasShownMembership = true;
-                setTimeout(() => {
-                    showAndHidePopup(membershipPopup);
-                    window.removeEventListener('scroll', handleScroll);
-                }, offsetDelay);
-            }
-        }
-    }
-
-    window.addEventListener('scroll', handleScroll);
 
     // Initialize GA using the injected ID
     loadGoogleAnalytics(ANALYTICS_ID);
