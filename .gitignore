@@ -3,7 +3,6 @@
 
 # Build/Dist folders (important for front-end frameworks)
 # Your project might use 'dist', 'build', 'out', etc.
-/dist
-/build
+
 # Node dependencies
 /node_modules
