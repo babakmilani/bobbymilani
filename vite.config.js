@@ -5,7 +5,7 @@ export default defineConfig({
     base: '/',
     
     build: {
-        outDir: 'dist',  // Build to dist folder
+        outDir: '/',  // Build to dist folder
         emptyOutDir: true,
         rollupOptions: {
             input: {
